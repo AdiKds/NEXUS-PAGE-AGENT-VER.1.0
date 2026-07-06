@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>NEXUS PAGE-AGENT AI | Futuristic Web Superagent by Mohamad Hartadi</title>
+    <meta name="description" content="Futuristic Web Automation Superagent inspired by Alibaba Page-Agent & JARVIS HUD. Built by Mohamad Hartadi (Adi).">
+    <meta name="author" content="Mohamad Hartadi">
+    <meta name="theme-color" content="#00020a">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=JetBrains+Mono:wght@500;700;800&family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #01040f; color: #00ffff; font-family: 'Rajdhani', 'Inter', sans-serif; overflow-x: hidden; min-height: 100vh; }
+        
+        /* Font Khusus */
+        .font-orbitron { font-family: 'Orbitron', sans-serif; }
+        .font-mono-code { font-family: 'JetBrains Mono', monospace; }
+        .font-rajdhani { font-family: 'Rajdhani', sans-serif; }
+        
+        /* Efek Glow & Holografik */
+        .glow-cyan { text-shadow: 0 0 10px #00ffff, 0 0 20px rgba(0,255,255,0.6); }
+        .glow-amber { text-shadow: 0 0 10px #f59e0b, 0 0 20px rgba(245,158,11,0.6); }
+        .glow-purple { text-shadow: 0 0 10px #a855f7, 0 0 20px rgba(168,85,247,0.6); }
+        
+        .hud-border { border: 1px solid rgba(0, 255, 255, 0.3); background: rgba(2, 10, 25, 0.75); backdrop-filter: blur(12px); }
+        .hud-border-amber { border: 1px solid rgba(245, 158, 11, 0.4); background: rgba(20, 10, 2, 0.75); }
+        .hud-border-purple { border: 1px solid rgba(168, 85, 247, 0.4); background: rgba(15, 5, 25, 0.75); }
+        .hud-border-emerald { border: 1px solid rgba(16, 185, 129, 0.4); background: rgba(2, 20, 15, 0.75); }
+        
+        /* Scanlines & Grid */
+        .scanline { position: fixed; left: 0; width: 100%; height: 2px; background: linear-gradient(90deg, transparent, rgba(0,255,255,0.8), transparent); animation: scan 5s linear infinite; opacity: 0.3; pointer-events: none; z-index: 50; }
+        .bg-grid { background-image: linear-gradient(rgba(0,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0,255,255,0.05) 1px, transparent 1px); background-size: 40px 40px; }
+        
+        /* Animasi Kustom */
+        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
+        @keyframes spinSlow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes spinRev { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
+        @keyframes pulseGlow { 0%, 100% { opacity: 0.6; transform: scale(1); } 50% { opacity: 1; transform: scale(1.03); } }
+        @keyframes mouthSpeak { 0%, 100% { transform: scaleY(0.2); } 25% { transform: scaleY(1.1); } 50% { transform: scaleY(0.5); } 75% { transform: scaleY(0.9); } }
+        @keyframes blinkEye { 0%, 90%, 100% { transform: scaleY(1); } 95% { transform: scaleY(0.08); } }
+        @keyframes floatY { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+        @keyframes shimmer { 100% { transform: translateX(100%); } }
+
+        .animate-spin-slow { animation: spinSlow 15s linear infinite; }
+        .animate-spin-rev { animation: spinRev 20s linear infinite; }
+        .animate-float { animation: floatY 4s ease-in-out infinite; }
+        
+        /* Avatar Robot Humanoid */
+        .eye-l { transform-origin: 35px 45px; animation: blinkEye 4s infinite; }
+        .eye-r { transform-origin: 65px 45px; animation: blinkEye 4s infinite; }
+        .mouth-wave { transform-origin: 50px 72px; transform: scaleY(0.2); transition: all 0.1s; }
+        .mouth-wave.speaking { animation: mouthSpeak 0.25s infinite; stroke: #f43f5e !important; filter: drop-shadow(0 0 8px #f43f5e); }
+        
+        /* Tooltip Holografik */
+        .holo-tooltip { position: fixed; background: rgba(5, 15, 30, 0.95); border: 2px solid #00ffff; box-shadow: 0 0 20px rgba(0,255,255,0.5); color: #fff; padding: 10px 14px; border-radius: 8px; font-size: 12px; font-family: 'JetBrains Mono', monospace; z-index: 9999; display: none; pointer-events: none; max-width: 300px; backdrop-filter: blur(8px); }
+
+        /* Scrollbar Kustom */
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: rgba(0, 255, 255, 0.05); }
+        ::-webkit-scrollbar-thumb { background: rgba(0, 255, 255, 0.4); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(0, 255, 255, 0.8); }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+
+        /* DOM Node Highlight Simulation */
+        .dom-node-highlight { outline: 2px dashed #f59e0b !important; box-shadow: 0 0 15px rgba(245,158,11,0.6) !important; background: rgba(245,158,11,0.1) !important; transition: all 0.3s; }
+    </style>
+</head>
+<body class="bg-grid relative flex flex-col justify-between p-2 md:p-4 selection:bg-cyan-500 selection:text-black">
+
+    <div class="scanline"></div>
+    <div id="holoTooltipBox" class="holo-tooltip"></div>
+
+    <div id="bootScreen" class="fixed inset-0 z-[1000] bg-[#000208] flex flex-col items-center justify-center font-orbitron transition-all duration-700">
+        <div class="absolute inset-0 bg-grid opacity-30"></div>
+        <div class="relative flex items-center justify-center mb-8">
+            <div class="absolute w-48 h-48 rounded-full border-2 border-dashed border-cyan-500/50 animate-spin-slow"></div>
+            <div class="absolute w-60 h-60 rounded-full border border-purple-500/40 animate-spin-rev"></div>
+            <div class="absolute w-72 h-72 rounded-full border-2 border-amber-500/20 animate-pulse"></div>
+            
+            <div class="z-10 text-center animate-float">
+                <i class="fa-solid fa-brain text-6xl md:text-7xl text-cyan-400 glow-cyan mb-2 animate-pulse"></i>
+                <div class="text-2xl md:text-3xl font-black tracking-[0.2em] text-white glow-cyan">NEXUS AI</div>
+                <div class="text-xs font-mono-code text-cyan-300 tracking-[0.3em] mt-1">PAGE-AGENT SUPERVISOR v1.0</div>
+            </div>
+        </div>
+        
+        <div class="w-72 md:w-96 bg-slate-900/80 p-2 rounded-xl border border-cyan-500/40 shadow-[0_0_20px_rgba(0,255,255,0.2)] z-10">
+            <div class="flex justify-between text-xs font-mono-code text-cyan-400 mb-1 px-1 font-bold">
+                <span id="bootText">INITIALIZING NEURAL CORE...</span>
+                <span id="bootPct" class="text-amber-400 font-bold">0%</span>
+            </div>
+            <div class="w-full h-3 bg-slate-950 rounded-lg overflow-hidden p-0.5 border border-cyan-800">
+                <div id="bootBar" class="h-full bg-gradient-to-r from-cyan-500 via-purple-500 to-amber-400 rounded transition-all duration-150 w-0 shadow-[0_0_10px_#00ffff]"></div>
+            </div>
+        </div>
+        
+        <div class="mt-6 font-mono-code text-xs text-slate-400 text-center space-y-1 z-10">
+            <div><i class="fa-solid fa-microchip text-cyan-400"></i> ARCHITECTURE: <span class="text-white">Alibaba Page-Agent DOM Perception Engine</span></div>
+            <div><i class="fa-solid fa-user-astronaut text-amber-400"></i> CREATED BY: <span class="text-amber-400 font-bold">MOHAMAD HARTADI (ADI)</span></div>
+        </div>
+    </div>
+
+    <div id="screensaver" class="fixed inset-0 z-[900] bg-[#00030c]/95 backdrop-blur-xl hidden flex-col items-center justify-center font-orbitron select-none cursor-pointer transition-opacity duration-500 opacity-0" onclick="hideScreensaver()">
+        <div class="absolute inset-0 bg-grid opacity-20 pointer-events-none"></div>
+        <div class="relative flex items-center justify-center mb-6 animate-float">
+            <div class="absolute w-72 h-72 rounded-full border-2 border-dashed border-cyan-500/40 animate-spin-slow"></div>
+            <div class="absolute w-80 h-80 rounded-full border border-purple-500/30 animate-spin-rev"></div>
+            <i class="fa-solid fa-shield-halved text-7xl text-cyan-400 glow-cyan animate-pulse"></i>
+        </div>
+        <div class="flex items-center gap-2 border-2 border-cyan-500/40 px-6 py-2 rounded-full bg-slate-950/80 text-cyan-400 font-mono-code text-xs md:text-sm tracking-[0.25em] uppercase shadow-lg z-10 mb-4 font-bold">
+            <i class="fa-solid fa-lock animate-pulse text-amber-400"></i> PRIVACY PROTECTION MODE ACTIVE
+        </div>
+        <div id="scClock" class="text-6xl sm:text-8xl md:text-9xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white via-cyan-200 to-cyan-500 tracking-wider filter drop-shadow-[0_0_35px_rgba(0,255,255,0.7)] z-10 font-orbitron">00:00:00</div>
+        <div class="mt-4 flex items-center justify-center gap-4 text-slate-300 font-rajdhani font-bold tracking-widest text-base md:text-xl border-y-2 border-cyan-500/40 py-2.5 px-8 bg-slate-900/60 z-10">
+            <span id="scDate">Memuat Tanggal...</span>
+            <span id="scTz" class="text-xs font-mono-code font-black text-amber-400 bg-slate-950 px-2 py-1 rounded border border-amber-500/40">WIB</span>
+        </div>
+        <div class="mt-12 text-slate-400 font-mono-code text-xs tracking-[0.3em] uppercase animate-pulse text-center z-10">
+            <i class="fa-solid fa-computer-mouse"></i> Klik Atau Sentuh Layar Untuk Mengaktifkan HUD
+        </div>
+    </div>
+
+    <div id="mainHUD" class="w-full flex flex-col flex-1 gap-4 opacity-0 transition-opacity duration-700">
+        
+        <header class="w-full hud-border rounded-2xl p-3 md:p-4 flex flex-col md:flex-row justify-between items-center gap-4 shadow-[0_0_25px_rgba(0,255,255,0.15)] z-40 relative">
+            <div class="flex items-center gap-3 w-full md:w-auto justify-start">
+                <div class="w-12 h-12 md:w-14 md:h-14 bg-slate-950 rounded-xl border-2 border-cyan-400 flex items-center justify-center shadow-[0_0_15px_rgba(0,255,255,0.4)] shrink-0 custom-holo" data-holo="NEXUS PAGE-AGENT v1.0: Superagent kecerdasan buatan untuk persepsi, penalaran logis, dan automasi halaman web.">
+                    <i class="fa-solid fa-network-wired text-2xl md:text-3xl text-cyan-400 animate-pulse"></i>
+                </div>
+                <div>
+                    <h1 class="font-orbitron text-lg md:text-2xl lg:text-3xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-white via-cyan-300 to-blue-500 flex items-center gap-2">
+                        <span>NEXUS PAGE-AGENT</span>
+                        <span class="text-[10px] md:text-xs font-mono-code font-bold bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded border border-amber-500/50">VER 1.0</span>
+                    </h1>
+                    <p class="text-xs md:text-sm font-mono-code text-slate-300 uppercase font-bold flex items-center gap-2 mt-0.5">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                        <span>Alibaba DOM Automation Framework</span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-4 bg-slate-950/90 border border-cyan-500/40 px-5 py-2 rounded-xl shadow-inner font-orbitron text-center custom-holo" data-holo="Sinkronisasi waktu lokal akurat untuk penanda aktivitas log (Timestamp) agen AI.">
+                <div class="text-left">
+                    <div id="hudDate" class="text-[10px] md:text-xs font-mono-code text-slate-400 font-bold uppercase">MEMUAT...</div>
+                    <div class="text-lg md:text-2xl font-black text-cyan-400 flex items-center gap-2">
+                        <i class="fa-regular fa-clock text-sm text-cyan-500"></i>
+                        <span id="hudClock">00:00:00</span>
+                        <span id="hudTz" class="text-[10px] font-mono-code text-amber-400 bg-amber-950/60 px-1.5 py-0.5 rounded border border-amber-500/30 font-bold">WIB</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2 w-full md:w-auto justify-end">
+                <button onclick="showScreensaver()" class="flex-1 md:flex-none bg-slate-900 hover:bg-slate-800 border border-cyan-500/40 hover:border-cyan-400 text-cyan-400 px-3.5 py-2.5 rounded-xl font-mono-code text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-md custom-holo" data-holo="Aktifkan Mode Screensaver Pelindung Privasi Layar.">
+                    <i class="fa-solid fa-desktop text-sm"></i> <span class="hidden sm:inline">SCREENSAVER</span>
+                </button>
+                <button onclick="openCreatorModal()" class="flex-1 md:flex-none bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-slate-950 font-orbitron font-black text-xs px-4 py-2.5 rounded-xl transition-all shadow-[0_0_15px_rgba(245,158,11,0.5)] flex items-center justify-center gap-2 cursor-pointer custom-holo" data-holo="Lihat Profil Programmer, Blogosphere, dan Tautan WhatsApp Mohamad Hartadi.">
+                    <i class="fa-solid fa-user-astronaut text-sm"></i> <span>CREATOR ID</span>
+                </button>
+            </div>
+        </header>
+
+        <main class="grid grid-cols-1 lg:grid-cols-12 gap-4 flex-1 items-start">
+            
+            <div class="lg:col-span-3 flex flex-col gap-4 w-full">
+                
+                <div class="hud-border rounded-2xl p-4 shadow-lg relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-cyan-500/10 rounded-full blur-xl pointer-events-none"></div>
+                    <div class="flex justify-between items-center border-b border-cyan-500/30 pb-2.5 mb-3">
+                        <span class="font-orbitron font-bold text-xs uppercase text-cyan-400 tracking-wider flex items-center gap-1.5">
+                            <i class="fa-solid fa-microchip"></i> AI BRAIN VITALS
+                        </span>
+                        <span id="aiCoreBadge" class="bg-emerald-500/20 text-emerald-400 font-mono-code text-[10px] font-black px-2 py-0.5 rounded border border-emerald-500/40">ONLINE</span>
+                    </div>
+                    
+                    <div class="space-y-3 font-mono-code text-xs">
+                        <div>
+                            <div class="flex justify-between text-slate-300 font-bold mb-1"><span>DOM PERCEPTION</span><span id="valPerception" class="text-cyan-400">98.4%</span></div>
+                            <div class="w-full h-2 bg-slate-950 rounded overflow-hidden border border-slate-700"><div id="barPerception" class="h-full bg-cyan-400 w-[98%] transition-all duration-500 shadow-[0_0_8px_#00ffff]"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-slate-300 font-bold mb-1"><span>NEURAL REASONING</span><span id="valReasoning" class="text-purple-400">85.2%</span></div>
+                            <div class="w-full h-2 bg-slate-950 rounded overflow-hidden border border-slate-700"><div id="barReasoning" class="h-full bg-purple-500 w-[85%] transition-all duration-500 shadow-[0_0_8px_#a855f7]"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-slate-300 font-bold mb-1"><span>ACTION SPEED</span><span id="valSpeed" class="text-amber-400">120 ms</span></div>
+                            <div class="w-full h-2 bg-slate-950 rounded overflow-hidden border border-slate-700"><div id="barSpeed" class="h-full bg-amber-400 w-[75%] transition-all duration-500 shadow-[0_0_8px_#f59e0b]"></div></div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2 mt-4 pt-3 border-t border-slate-800 font-mono-code text-center text-xs">
+                        <div class="bg-slate-950 p-2 rounded border border-slate-800"><span class="text-slate-400 block text-[10px]">TARGET NODES</span><span id="nodeCount" class="text-base font-black text-cyan-400">0</span></div>
+                        <div class="bg-slate-950 p-2 rounded border border-slate-800"><span class="text-slate-400 block text-[10px]">ACTIONS EXECUTED</span><span id="actionCount" class="text-base font-black text-emerald-400">0</span></div>
+                    </div>
+                </div>
+
+                <div class="hud-border-purple rounded-2xl p-4 shadow-lg flex flex-col flex-1">
+                    <div class="flex justify-between items-center border-b border-purple-500/30 pb-2.5 mb-3">
+                        <span class="font-orbitron font-bold text-xs uppercase text-purple-400 tracking-wider flex items-center gap-1.5">
+                            <i class="fa-solid fa-sitemap"></i> DOM ACCESSIBILITY TREE
+                        </span>
+                        <button onclick="scanWebSandbox()" class="bg-purple-900/50 hover:bg-purple-600 text-purple-200 hover:text-white px-2.5 py-1 rounded text-[10px] font-mono-code font-bold border border-purple-500/50 transition-all cursor-pointer">
+                            <i class="fa-solid fa-rotate-right mr-1"></i> SCAN
+                        </button>
+                    </div>
+                    <p class="text-slate-300 text-xs font-rajdhani font-bold mb-2">Pohon elemen interaktif yang diekstrak oleh Page-Agent dari kotak web target:</p>
+                    
+                    <div id="domTreeLog" class="bg-slate-950 p-3 rounded-xl border border-slate-800 font-mono-code text-xs text-slate-300 space-y-2 max-h-64 overflow-y-auto hide-scrollbar flex-1">
+                        <div class="text-slate-500 italic">Tekan tombol [SCAN] atau tombol [AUTO-SCAN DOM] di kolom tengah untuk membedah struktur halaman web...</div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="lg:col-span-5 flex flex-col gap-4 w-full">
+                
+                <div class="hud-border rounded-2xl p-4 shadow-xl flex flex-col sm:flex-row items-center gap-4 relative overflow-hidden bg-gradient-to-b from-slate-900/90 to-slate-950/90">
+                    <div class="absolute -top-10 -left-10 w-40 h-40 bg-cyan-500/10 rounded-full blur-2xl pointer-events-none"></div>
+                    
+                    <div class="relative w-36 h-36 sm:w-44 sm:h-44 shrink-0 flex items-center justify-center animate-float">
+                        <div class="absolute inset-0 rounded-full border-2 border-dashed border-cyan-500/40 animate-spin-slow"></div>
+                        <div class="absolute inset-2 rounded-full border border-purple-500/50 animate-spin-rev"></div>
+                        <div class="absolute inset-4 rounded-full border border-amber-400/30 animate-pulse"></div>
+                        
+                        <svg class="w-28 h-28 sm:w-36 sm:h-36 filter drop-shadow-[0_0_15px_rgba(0,255,255,0.5)] relative z-10" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <polygon points="20,35 10,15 40,25" fill="#020a1a" stroke="#00ffff" stroke-width="2"/>
+                            <polygon points="80,35 90,15 60,25" fill="#020a1a" stroke="#00ffff" stroke-width="2"/>
+                            <circle cx="50" cy="50" r="38" fill="#030b1e" stroke="#00ffff" stroke-width="2.5"/>
+                            <path d="M 16 40 Q 50 20 84 40" fill="none" stroke="#334155" stroke-width="5" stroke-linecap="round"/>
+                            
+                            <circle cx="50" cy="30" r="8" fill="#1e293b" stroke="#00ffff" stroke-width="1.5"/>
+                            <circle cx="50" cy="30" r="3" fill="#00ffff" class="animate-ping"/>
+                            
+                            <g class="eye-l"><ellipse cx="34" cy="46" rx="6" ry="8" fill="#00ffff"/><circle cx="32" cy="44" r="2.5" fill="#ffffff"/><path d="M 26 39 Q 34 35 42 39" fill="none" stroke="#00ffff" stroke-width="2"/></g>
+                            <g class="eye-r"><ellipse cx="66" cy="46" rx="6" ry="8" fill="#00ffff"/><circle cx="64" cy="44" r="2.5" fill="#ffffff"/><path d="M 58 39 Q 66 35 74 39" fill="none" stroke="#00ffff" stroke-width="2"/></g>
+                            
+                            <polygon points="20,55 28,58 22,62" fill="#a855f7" opacity="0.8"/>
+                            <polygon points="80,55 72,58 78,62" fill="#a855f7" opacity="0.8"/>
+                            <polygon points="46,56 54,56 50,61" fill="#f59e0b"/>
+                            
+                            <g id="robotMouth" class="mouth-wave"><path d="M 36 72 Q 43 78 50 72 Q 57 78 64 72" fill="none" stroke="#00ffff" stroke-width="3" stroke-linecap="round"/></g>
+                            <line x1="25" y1="72" x2="32" y2="72" stroke="#00ffff" stroke-width="2" opacity="0.5"/>
+                            <line x1="68" y1="72" x2="75" y2="72" stroke="#00ffff" stroke-width="2" opacity="0.5"/>
+                        </svg>
+                    </div>
+
+                    <div class="flex-1 w-full text-center sm:text-left">
+                        <div class="flex items-center justify-center sm:justify-start gap-2 mb-1">
+                            <span class="font-orbitron font-black text-sm sm:text-base text-cyan-300 glow-cyan uppercase tracking-wider">CYBER-HUMANOID AGENT</span>
+                            <span id="speechBadge" class="bg-cyan-500/20 text-cyan-400 font-mono-code text-[9px] font-black px-2 py-0.5 rounded border border-cyan-500/50">VOICE READY</span>
+                        </div>
+                        <p class="text-xs sm:text-sm text-slate-300 font-rajdhani font-bold leading-relaxed mb-3">
+                            "Halo Bos! Saya bersiap mengontrol elemen halaman web. Gunakan mikrofon atau klik tombol eksekusi aksi di bawah."
+                        </p>
+
+                        <div class="flex flex-wrap items-center gap-2 justify-center sm:justify-start">
+                            <button id="btnVoiceToggle" onclick="toggleVoiceSpeech()" class="bg-slate-900 hover:bg-cyan-900/50 border border-cyan-400 text-cyan-400 px-3 py-1.5 rounded-lg font-mono-code text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm cursor-pointer custom-holo" data-holo="Aktifkan/Matikan suara bicara robot (Web Speech Synthesis API).">
+                                <i id="iconVoice" class="fa-solid fa-volume-high text-amber-400"></i> <span id="txtVoice">SUARA: ON</span>
+                            </button>
+                            <button onclick="startMicRecognition()" class="bg-gradient-to-r from-red-600 to-rose-500 hover:from-red-500 hover:to-rose-400 text-white px-3 py-1.5 rounded-lg font-mono-code text-xs font-bold transition-all flex items-center gap-1.5 shadow-[0_0_12px_rgba(244,63,94,0.5)] cursor-pointer custom-holo" data-holo="Bicara ke mikrofon untuk memerintahkan robot (Misal: 'Scan halaman', 'Isi form').">
+                                <i class="fa-solid fa-microphone"></i> <span>PERINTAH SUARA</span>
+                            </button>
+                            <button onclick="speakAgent('Dasbor NEXUS PAGE-AGENT berfungsi nominal. Seluruh sistem automasi siap menerima perintah Anda, Pak Adi.')" class="bg-slate-900 hover:bg-slate-800 border border-slate-600 text-slate-300 px-2.5 py-1.5 rounded-lg font-mono-code text-xs font-bold transition-all" title="Tes Suara Robot">
+                                <i class="fa-solid fa-comment-dots"></i> TES SUARA
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hud-border-amber rounded-2xl p-4 shadow-xl flex flex-col flex-1 border-2 border-amber-500/50">
+                    <div class="flex justify-between items-center border-b border-amber-500/40 pb-2.5 mb-3">
+                        <span class="font-orbitron font-bold text-xs uppercase text-amber-400 tracking-wider flex items-center gap-1.5">
+                            <i class="fa-solid fa-globe animate-spin-slow"></i> TARGET WEB SANDBOX (SIMULATOR)
+                        </span>
+                        <span class="text-[10px] font-mono-code bg-amber-950 text-amber-300 px-2 py-0.5 rounded border border-amber-500/40 font-bold">URL: nexus-shop-demo.id</span>
+                    </div>
+
+                    <p class="text-xs text-slate-300 font-rajdhani font-bold mb-3">
+                        Ini adalah simulasi halaman web e-commerce. Tekan tombol aksi di bawah untuk melihat bagaimana **Page-Agent** mengidentifikasi elemen dan mengetik otomatis:
+                    </p>
+
+                    <div id="sandboxArea" class="bg-slate-950 p-4 rounded-xl border-2 border-slate-800 space-y-3 font-rajdhani relative overflow-hidden transition-all shadow-inner">
+                        <div class="flex justify-between items-center bg-slate-900 p-2.5 rounded-lg border border-slate-700" data-agent-id="node-header">
+                            <span class="font-orbitron font-bold text-sm text-cyan-400"><i class="fa-solid fa-cart-shopping mr-1"></i> CYBER-STORE ID</span>
+                            <button id="sbBtnLogin" onclick="sbAction('Login ditekankan!')" class="bg-cyan-600 hover:bg-cyan-500 text-black font-mono-code text-xs font-black px-3 py-1 rounded cursor-pointer transition-all" data-agent-id="btn-login">LOGIN AKUN</button>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2" data-agent-id="node-form">
+                            <div class="flex flex-col">
+                                <label class="text-[11px] font-mono-code text-slate-400 font-bold mb-1">NAMA PEMBELI *</label>
+                                <input type="text" id="sbInputName" placeholder="Ketik nama Anda..." class="bg-slate-900 border border-slate-600 rounded px-3 py-1.5 text-xs font-mono-code text-white focus:border-amber-400 outline-none" data-agent-id="input-name">
+                            </div>
+                            <div class="flex flex-col">
+                                <label class="text-[11px] font-mono-code text-slate-400 font-bold mb-1">KODE VOUCHER *</label>
+                                <input type="text" id="sbInputVoucher" placeholder="Ketik voucher..." class="bg-slate-900 border border-slate-600 rounded px-3 py-1.5 text-xs font-mono-code text-white focus:border-amber-400 outline-none" data-agent-id="input-voucher">
+                            </div>
+                        </div>
+
+                        <div class="p-3 bg-gradient-to-r from-purple-950/60 to-slate-900 rounded-lg border border-purple-500/40 flex justify-between items-center" data-agent-id="node-product">
+                            <div>
+                                <h4 class="font-bold text-sm text-white">Neural Headset Pro v5</h4>
+                                <p class="text-xs font-mono-code text-purple-300">Harga: Rp 4.500.000 | Stok: <span class="text-emerald-400 font-bold">Tersedia</span></p>
+                            </div>
+                            <button id="sbBtnBuy" onclick="sbAction('Produk berhasil masuk keranjang!')" class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-orbitron font-black text-xs px-3.5 py-2 rounded shadow-md cursor-pointer transition-all shrink-0" data-agent-id="btn-buy">
+                                <i class="fa-solid fa-bolt mr-1"></i> BELI SEKARANG
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-3 border-t border-slate-800">
+                        <span class="font-orbitron text-[11px] font-bold text-slate-400 uppercase tracking-widest block mb-2"><i class="fa-solid fa-gamepad text-cyan-400 mr-1"></i> EKSEKUSI AKSI PAGE-AGENT:</span>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 font-mono-code text-xs font-bold">
+                            <button onclick="agentActionScan()" class="bg-cyan-950 hover:bg-cyan-800 border border-cyan-500/60 text-cyan-300 py-2 rounded-lg transition-all shadow flex items-center justify-center gap-1.5 cursor-pointer custom-holo" data-holo="Perintahkan AI untuk membedah DOM & menandai elemen dengan warna kuning.">
+                                <i class="fa-solid fa-magnifying-glass-chart"></i> 1. SCAN DOM
+                            </button>
+                            <button onclick="agentActionType()" class="bg-purple-950 hover:bg-purple-800 border border-purple-500/60 text-purple-300 py-2 rounded-lg transition-all shadow flex items-center justify-center gap-1.5 cursor-pointer custom-holo" data-holo="Perintahkan AI untuk mengetik nama & voucher secara otomatis di form.">
+                                <i class="fa-solid fa-keyboard"></i> 2. AUTO-FILL FORM
+                            </button>
+                            <button onclick="agentActionClickBuy()" class="bg-amber-950 hover:bg-amber-800 border border-amber-500/60 text-amber-300 py-2 rounded-lg transition-all shadow flex items-center justify-center gap-1.5 cursor-pointer custom-holo" data-holo="Perintahkan AI untuk mengklik tombol 'BELI SEKARANG' secara otonom.">
+                                <i class="fa-solid fa-computer-mouse"></i> 3. CLICK 'BELI'
+                            </button>
+                            <button onclick="agentActionExtract()" class="bg-emerald-950 hover:bg-emerald-800 border border-emerald-500/60 text-emerald-300 py-2 rounded-lg transition-all shadow flex items-center justify-center gap-1.5 cursor-pointer custom-holo" data-holo="Perintahkan AI untuk mengambil (scraping) harga & stok produk ke dalam log.">
+                                <i class="fa-solid fa-file-code"></i> 4. EXTRACT DATA
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="lg:col-span-4 flex flex-col gap-4 w-full">
+                
+                <div class="hud-border-emerald rounded-2xl p-4 shadow-xl flex flex-col h-80 lg:h-96 border-2 border-emerald-500/50">
+                    <div class="flex justify-between items-center border-b border-emerald-500/40 pb-2.5 mb-3">
+                        <span class="font-orbitron font-bold text-xs uppercase text-emerald-400 tracking-wider flex items-center gap-1.5">
+                            <i class="fa-solid fa-terminal animate-pulse"></i> AI REASONING LOG (THOUGHTS)
+                        </span>
+                        <button onclick="clearLog()" class="text-slate-400 hover:text-red-400 text-xs font-mono-code font-bold cursor-pointer"><i class="fa-solid fa-trash mr-1"></i> CLEAR</button>
+                    </div>
+
+                    <div id="reasoningLog" class="bg-slate-950 p-3 rounded-xl border border-slate-800 font-mono-code text-xs text-slate-200 overflow-y-auto space-y-2.5 flex-1 hide-scrollbar shadow-inner">
+                        <div class="text-cyan-400 font-bold border-l-2 border-cyan-500 pl-2">
+                            [SYSTEM] NEXUS Page-Agent diinisialisasi. Siap memproses DOM tree...
+                        </div>
+                    </div>
+
+                    <form class="mt-3 flex gap-2" onsubmit="handleUserCommand(event)">
+                        <input type="text" id="userInputCmd" placeholder="Ketik perintah (e.g., 'scan', 'beli', 'isi form')..." class="flex-1 bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs font-mono-code text-white focus:border-emerald-400 outline-none font-bold">
+                        <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-black font-orbitron font-black text-xs px-4 py-2 rounded-lg transition-all cursor-pointer shrink-0">
+                            <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="hud-border rounded-2xl p-4 shadow-lg flex-1">
+                    <div class="flex items-center gap-2 border-b border-cyan-500/30 pb-2.5 mb-3">
+                        <i class="fa-solid fa-circle-question text-cyan-400 text-lg"></i>
+                        <span class="font-orbitron font-bold text-xs uppercase text-cyan-400 tracking-wider">HELP SYSTEM & GUIDANCE</span>
+                    </div>
+                    <div class="space-y-2.5 font-rajdhani font-bold text-xs text-slate-300 leading-relaxed text-justify">
+                        <div class="p-2 bg-slate-950 rounded border border-slate-800">
+                            <span class="text-amber-400 font-mono-code block font-black mb-0.5"><i class="fa-solid fa-lightbulb"></i> APA ITU PAGE-AGENT?</span>
+                            Konsep agen AI dari Alibaba yang tidak hanya melihat screenshot, melainkan membedah struktur HTML (DOM Tree) untuk melakukan klik dan ketik secara presisi bak manusia.
+                        </div>
+                        <div class="p-2 bg-slate-950 rounded border border-slate-800">
+                            <span class="text-purple-400 font-mono-code block font-black mb-0.5"><i class="fa-solid fa-microphone-lines"></i> KENDALI SUARA (JARVIS STYLE)</span>
+                            Klik tombol <b>PERINTAH SUARA</b> dan ucapkan perintah seperti <i class="text-cyan-300">"Scan DOM"</i>, <i class="text-cyan-300">"Isi formulir"</i>, atau <i class="text-cyan-300">"Beli produk"</i>. Robot humanoid akan merespons dengan suara!
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+
+        <footer class="w-full bg-slate-950/90 border-2 border-cyan-500/40 rounded-2xl p-3 md:p-4 flex flex-col sm:flex-row justify-between items-center gap-4 shadow-[0_0_20px_rgba(0,255,255,0.2)] z-30 mt-2">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-slate-900 border-2 border-cyan-400 flex items-center justify-center text-cyan-400 text-lg shrink-0 shadow-md">
+                    <i class="fa-solid fa-user-gear"></i>
+                </div>
+                <div>
+                    <div class="font-orbitron font-black text-sm text-cyan-300 glow-cyan tracking-wide">MOHAMAD HARTADI (ADI)</div>
+                    <div class="font-mono-code text-[10px] text-slate-400 font-bold">Software Engineer & UI/UX Architect | Newbie AI</div>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap items-center justify-center gap-2 font-mono-code text-xs font-bold w-full sm:w-auto">
+                <a href="https://www.facebook.com/m.hartadi" target="_blank" class="flex-1 sm:flex-none justify-center bg-blue-950 hover:bg-blue-800 border border-blue-500/50 text-blue-300 px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all shadow-[0_0_10px_rgba(59,130,246,0.3)]">
+                    <i class="fa-brands fa-facebook text-sm"></i> Facebook
+                </a>
+                <a href="https://newbieonline7.blogspot.com/" target="_blank" class="flex-1 sm:flex-none justify-center bg-amber-950 hover:bg-amber-800 border border-amber-500/50 text-amber-300 px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all shadow-[0_0_10px_rgba(245,158,11,0.3)]">
+                    <i class="fa-solid fa-globe text-sm"></i> Blogosphere
+                </a>
+                <a href="https://wa.me/6282231036047?text=Halo%20Adi,%20saya%20terkagum%20dengan%20aplikasi%20NEXUS%20PAGE-AGENT%20AI%20buatan%20Anda!" target="_blank" class="flex-1 sm:flex-none justify-center bg-emerald-950 hover:bg-emerald-800 border border-emerald-500/50 text-emerald-300 px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all shadow-[0_0_10px_rgba(16,185,129,0.3)]">
+                    <i class="fa-brands fa-whatsapp text-sm"></i> WhatsApp
+                </a>
+            </div>
+        </footer>
+
+    </div>
+
+    <div id="creatorModal" class="fixed inset-0 z-[1100] hidden bg-black/85 backdrop-blur-md flex items-center justify-center p-4 select-none">
+        <div class="bg-slate-900 border-2 border-cyan-500 rounded-2xl w-full max-w-md p-6 relative shadow-[0_0_50px_rgba(0,255,255,0.6)] animate-float">
+            <button onclick="closeCreatorModal()" class="absolute top-4 right-4 text-slate-400 hover:text-red-400 text-3xl font-black cursor-pointer transition-colors leading-none">&times;</button>
+            <div class="text-center pb-4 mb-4 border-b border-slate-800 flex flex-col items-center">
+                <div class="w-16 h-16 bg-slate-950 rounded-full border-2 border-cyan-400 flex items-center justify-center text-cyan-400 text-2xl mb-3 shadow-[0_0_20px_rgba(0,255,255,0.6)] relative">
+                    <i class="fa-solid fa-user-astronaut"></i>
+                    <div class="absolute inset-0 rounded-full border border-cyan-300 animate-ping opacity-50"></div>
+                </div>
+                <h3 class="text-xl font-black font-orbitron text-cyan-400 tracking-wider glow-cyan">MOHAMAD HARTADI (ADI)</h3>
+                <p class="text-xs font-mono-code font-bold text-slate-300 mt-1">Software Engineer | Prompt Architect | UI/UX Designer</p>
+                <span class="mt-2 bg-purple-500/20 text-purple-300 text-[10px] font-mono-code font-black px-3 py-1 rounded-full border border-purple-500/50">NEWBIE AI / EDITOR NEWBIE AI</span>
+            </div>
+            
+            <div class="space-y-3 font-mono-code text-xs font-bold">
+                <a href="https://www.facebook.com/m.hartadi" target="_blank" class="flex items-center gap-3 bg-slate-950 p-3 rounded-xl border border-blue-500/50 hover:border-blue-400 hover:scale-105 transition-all shadow-md">
+                    <i class="fa-brands fa-facebook text-blue-400 text-2xl w-8 text-center"></i>
+                    <div class="min-w-0"><span class="block text-[9px] text-slate-400 uppercase">Profil Resmi Facebook</span><span class="text-blue-400 font-bold truncate block">facebook.com/m.hartadi</span></div>
+                </a>
+                <a href="https://newbieonline7.blogspot.com/" target="_blank" class="flex items-center gap-3 bg-slate-950 p-3 rounded-xl border border-amber-500/50 hover:border-amber-400 hover:scale-105 transition-all shadow-md">
+                    <i class="fa-solid fa-globe text-amber-400 text-2xl w-8 text-center"></i>
+                    <div class="min-w-0"><span class="block text-[9px] text-slate-400 uppercase">Blog & Portofolio Profesional</span><span class="text-amber-400 font-bold truncate block">newbieonline7.blogspot.com</span></div>
+                </a>
+                <a href="https://wa.me/6282231036047" target="_blank" class="flex items-center gap-3 bg-slate-950 p-3 rounded-xl border border-emerald-500/50 hover:border-emerald-400 hover:scale-105 transition-all shadow-md">
+                    <i class="fa-brands fa-whatsapp text-emerald-400 text-2xl w-8 text-center"></i>
+                    <div class="min-w-0"><span class="block text-[9px] text-slate-400 uppercase">Kontak Enkripsi WhatsApp</span><span class="text-emerald-400 font-bold truncate block">082231036047</span></div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA & STATE ---
+        let isVoiceEnabled = true;
+        let actionCounter = 0;
+        let idleTimer = 0;
+        let isScreensaverOn = false;
+        const synth = window.speechSynthesis;
+
+        // --- INISIALISASI AWAL ---
+        document.addEventListener("DOMContentLoaded", () => {
+            initBootLoader();
+            initClockSync();
+            initHoloTooltips();
+            initWatchdog();
+        });
+
+        // 1. Boot Loader
+        function initBootLoader() {
+            let pct = 0;
+            const bar = document.getElementById("bootBar");
+            const pctText = document.getElementById("bootPct");
+            const statusText = document.getElementById("bootText");
+            const msgs = [
+                "INITIALIZING NEURAL CORE...",
+                "LOADING ALIBABA PAGE-AGENT DOM PARSER...",
+                "CALIBRATING HUMANOID SPEECH SYNTHESIS...",
+                "CONNECTING TO NEXUS CLOUD WORKSPACE...",
+                "SYSTEMS NOMINAL. WELCOME MOHAMAD HARTADI."
+            ];
+
+            const interval = setInterval(() => {
+                pct += Math.floor(Math.random() * 15) + 5;
+                if (pct >= 100) {
+                    pct = 100;
+                    clearInterval(interval);
+                    statusText.innerText = msgs[4];
+                    setTimeout(() => {
+                        document.getElementById("bootScreen").classList.add("opacity-0");
+                        setTimeout(() => {
+                            document.getElementById("bootScreen").style.display = "none";
+                            document.getElementById("mainHUD").classList.remove("opacity-0");
+                            speakAgent("Selamat datang di NEXUS Page-Agent. Seluruh modul DOM dan antarmuka robotik siap menerima perintah Anda, Pak Adi.");
+                        }, 700);
+                    }, 800);
+                }
+                bar.style.width = pct + "%";
+                pctText.innerText = pct + "%";
+                if(pct < 30) statusText.innerText = msgs[0];
+                else if(pct < 60) statusText.innerText = msgs[1];
+                else if(pct < 85) statusText.innerText = msgs[2];
+                else statusText.innerText = msgs[3];
+            }, 180);
+        }
+
+        // 2. Waktu Real-Time & Timezone
+        function initClockSync() {
+            const days = ["MINGGU", "SENIN", "SELASA", "RABU", "KAMIS", "JUMAT", "SABTU"];
+            const months = ["JAN", "FEB", "MAR", "APR", "MEI", "JUN", "JUL", "AGU", "SEP", "OKT", "NOV", "DES"];
+            const tz = Intl.DateTimeFormat().resolvedOptions().timeZone.split('/').pop().toUpperCase() || "WIB";
+            
+            document.getElementById("hudTz").innerText = tz;
+            document.getElementById("scTz").innerText = tz;
+
+            setInterval(() => {
+                const now = new Date();
+                const dayStr = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+                const timeStr = now.toTimeString().split(' ')[0];
+                
+                document.getElementById("hudDate").innerText = dayStr;
+                document.getElementById("hudClock").innerText = timeStr;
+                
+                if(isScreensaverOn) {
+                    document.getElementById("scDate").innerText = dayStr;
+                    document.getElementById("scClock").innerText = timeStr;
+                }
+            }, 1000);
+        }
+
+        // 3. Suara Robot Humanoid (Speech Synthesis)
+        function speakAgent(text) {
+            if (!isVoiceEnabled || !synth) return;
+            synth.cancel(); // Hentikan suara sebelumnya
+            
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = "id-ID";
+            utterance.rate = 1.0;
+            utterance.pitch = 0.9; // Nada sedikit robotik/tegas
+            
+            const mouth = document.getElementById("robotMouth");
+            utterance.onstart = () => { mouth.classList.add("speaking"); };
+            utterance.onend = () => { mouth.classList.remove("speaking"); };
+            utterance.onerror = () => { mouth.classList.remove("speaking"); };
+            
+            synth.speak(utterance);
+        }
+
+        function toggleVoiceSpeech() {
+            isVoiceEnabled = !isVoiceEnabled;
+            const btn = document.getElementById("btnVoiceToggle");
+            const icon = document.getElementById("iconVoice");
+            const txt = document.getElementById("txtVoice");
+            
+            if(isVoiceEnabled) {
+                btn.className = "bg-slate-900 hover:bg-cyan-900/50 border border-cyan-400 text-cyan-400 px-3 py-1.5 rounded-lg font-mono-code text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm cursor-pointer custom-holo";
+                icon.className = "fa-solid fa-volume-high text-amber-400";
+                txt.innerText = "SUARA: ON";
+                speakAgent("Modul suara robot diaktifkan.");
+            } else {
+                synth.cancel();
+                document.getElementById("robotMouth").classList.remove("speaking");
+                btn.className = "bg-slate-900 border border-red-500/50 text-red-400 px-3 py-1.5 rounded-lg font-mono-code text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer custom-holo";
+                icon.className = "fa-solid fa-volume-xmark text-red-500";
+                txt.innerText = "SUARA: OFF";
+            }
+        }
+
+        // 4. Perintah Mikrofon (Speech Recognition)
+        function startMicRecognition() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                alert("Maaf, browser Anda tidak mendukung fitur pemindaian mikrofon (Web Speech Recognition). Gunakan Google Chrome desktop.");
+                return;
+            }
+            
+            const rec = new SpeechRecognition();
+            rec.lang = "id-ID";
+            rec.continuous = false;
+            
+            speakAgent("Saya mendengarkan perintah Anda, bos.");
+            addLog("SYSTEM", "Mendengarkan mikrofon... Ucapkan perintah Anda.", "amber");
+            
+            rec.start();
+            rec.onresult = (e) => {
+                const transcript = e.results[0][0].transcript.toLowerCase();
+                document.getElementById("userInputCmd").value = transcript;
+                addLog("USER VOICE", `"${transcript}"`, "cyan");
+                processAIReasoning(transcript);
+            };
+            rec.onerror = () => {
+                addLog("ERROR", "Gagal mengenali suara atau mikrofon tidak diizinkan.", "red");
+            };
+        }
+
+        // 5. AI Reasoning & Log Terminal
+        function addLog(step, text, colorType = "slate") {
+            const logBox = document.getElementById("reasoningLog");
+            const now = new Date().toLocaleTimeString('id-ID');
+            let colorClass = "text-slate-200 border-slate-700";
+            
+            if(colorType === "cyan") colorClass = "text-cyan-300 border-cyan-500";
+            else if(colorType === "amber") colorClass = "text-amber-300 border-amber-500";
+            else if(colorType === "purple") colorClass = "text-purple-300 border-purple-500";
+            else if(colorType === "emerald") colorClass = "text-emerald-300 border-emerald-500";
+            else if(colorType === "pink") colorClass = "text-pink-300 border-pink-500";
+            else if(colorType === "red") colorClass = "text-red-400 border-red-500";
+
+            const div = document.createElement("div");
+            div.className = `border-l-2 pl-2.5 py-1 ${colorClass} bg-slate-900/50 rounded-r text-[11px] md:text-xs`;
+            div.innerHTML = `<span class="text-slate-500 text-[10px] block">[${now}] • ${step}</span><span class="font-bold">${text}</span>`;
+            
+            logBox.appendChild(div);
+            logBox.scrollTop = logBox.scrollHeight;
+        }
+
+        function clearLog() {
+            document.getElementById("reasoningLog").innerHTML = `<div class="text-cyan-400 font-bold border-l-2 border-cyan-500 pl-2">[SYSTEM] Log dibersihkan. Memori siap...</div>`;
+        }
+
+        function handleUserCommand(e) {
+            e.preventDefault();
+            const input = document.getElementById("userInputCmd");
+            const cmd = input.value.trim().toLowerCase();
+            if(!cmd) return;
+            addLog("USER COMMAND", cmd, "cyan");
+            input.value = "";
+            processAIReasoning(cmd);
+        }
+
+        // --- INTI ALIBABA PAGE-AGENT ENGINE SIMULATION ---
+        function processAIReasoning(cmd) {
+            if(cmd.includes("scan") || cmd.includes("bedah") || cmd.includes("dom") || cmd.includes("pohon")) {
+                agentActionScan();
+            } else if(cmd.includes("ketik") || cmd.includes("isi") || cmd.includes("form") || cmd.includes("tulis")) {
+                agentActionType();
+            } else if(cmd.includes("beli") || cmd.includes("klik") || cmd.includes("click") || cmd.includes("keranjang")) {
+                agentActionClickBuy();
+            } else if(cmd.includes("ekstrak") || cmd.includes("extract") || cmd.includes("data") || cmd.includes("ambil") || cmd.includes("scrap")) {
+                agentActionExtract();
+            } else if(cmd.includes("halo") || cmd.includes("siapa kamu") || cmd.includes("adi")) {
+                speakAgent("Saya NEXUS Page-Agent, superagent kecerdasan buatan yang dirancang oleh Mohamad Hartadi untuk mengotomasi interaksi web secara presisi.");
+                addLog("AI RESPOND", "Halo! Saya agen otonom buatan Mohamad Hartadi (Adi).", "purple");
+            } else {
+                speakAgent("Perintah diterima. Saya sedang memproses pohon DOM untuk menemukan elemen yang relevan.");
+                addLog("AI REASONING", `Menganalisis maksud: "${cmd}". Tidak ada aksi langsung, menjalankan scan DOM default...`, "purple");
+                setTimeout(agentActionScan, 1000);
+            }
+        }
+
+        // AKSI 1: SCAN DOM (Alibaba Perception)
+        function agentActionScan() {
+            speakAgent("Memulai pemindaian struktur DOM pada kotak web sandbox.");
+            addLog("PERCEIVE (DOM)", "Membaca accessibility tree dari simulator...", "purple");
+            
+            const sandbox = document.getElementById("sandboxArea");
+            const elements = sandbox.querySelectorAll("[data-agent-id]");
+            
+            elements.forEach((el, idx) => {
+                setTimeout(() => {
+                    el.classList.add("dom-node-highlight");
+                    setTimeout(() => el.classList.remove("dom-node-highlight"), 1200);
+                }, idx * 250);
+            });
+
+            setTimeout(() => {
+                const domLog = document.getElementById("domTreeLog");
+                domLog.innerHTML = `
+                    <div class="text-cyan-400 font-bold border-b border-slate-800 pb-1 mb-1">FOUND 6 INTERACTIVE NODES:</div>
+                    <div class="text-amber-300">├── [BUTTON] id="btn-login" (Login Akun)</div>
+                    <div class="text-slate-300">├── [INPUT] id="input-name" (Text: Nama Pembeli)</div>
+                    <div class="text-slate-300">├── [INPUT] id="input-voucher" (Text: Kode Voucher)</div>
+                    <div class="text-purple-300">└── [BUTTON] id="btn-buy" (Beli Sekarang - Rp 4.5M)</div>
+                `;
+                document.getElementById("nodeCount").innerText = "6";
+                incrementAction();
+                addLog("PLAN -> ACT", "Struktur DOM terindeks 100%. Siap untuk eksekusi input form atau klik tombol.", "emerald");
+                speakAgent("Pemindaian DOM selesai. Ditemukan 6 elemen interaktif yang siap dikontrol.");
+            }, 1200);
+        }
+
+        function scanWebSandbox() { agentActionScan(); }
+
+        // AKSI 2: AUTO-FILL FORM WITH TYPEWRITER EFFECT
+        function agentActionType() {
+            addLog("PERCEIVE -> PLAN", "Mengidentifikasi input form #input-name dan #input-voucher. Merencanakan auto-typing...", "purple");
+            speakAgent("Mengetik otomatis data pengguna ke dalam formulir web.");
+            
+            const inputName = document.getElementById("sbInputName");
+            const inputVoucher = document.getElementById("sbInputVoucher");
+            
+            inputName.classList.add("dom-node-highlight");
+            inputVoucher.classList.add("dom-node-highlight");
+            
+            inputName.value = "";
+            inputVoucher.value = "";
+
+            const targetName = "MOHAMAD HARTADI (ADI)";
+            const targetVoucher = "NEXUS-AI-2026-VIP";
+            let i = 0;
+
+            const typeInterval = setInterval(() => {
+                if (i < targetName.length) inputName.value += targetName.charAt(i);
+                if (i < targetVoucher.length) inputVoucher.value += targetVoucher.charAt(i);
+                i++;
+                if (i >= Math.max(targetName.length, targetVoucher.length)) {
+                    clearInterval(typeInterval);
+                    inputName.classList.remove("dom-node-highlight");
+                    inputVoucher.classList.remove("dom-node-highlight");
+                    incrementAction();
+                    addLog("ACT (EXECUTE)", `Berhasil menginput: Nama="${targetName}", Voucher="${targetVoucher}"`, "emerald");
+                    speakAgent("Formulir berhasil diisi dengan identitas VIP Pak Adi.");
+                }
+            }, 60);
+        }
+
+        // AKSI 3: CLICK BUTTON
+        function agentActionClickBuy() {
+            addLog("PERCEIVE -> PLAN", "Mencari tombol dengan label 'BELI SEKARANG'. Target node ditemukan: #btn-buy", "purple");
+            speakAgent("Mengeksekusi klik pada tombol beli sekarang.");
+            
+            const btnBuy = document.getElementById("sbBtnBuy");
+            btnBuy.classList.add("dom-node-highlight");
+            
+            setTimeout(() => {
+                btnBuy.click(); // Trigger native click event
+                btnBuy.classList.remove("dom-node-highlight");
+                incrementAction();
+                addLog("ACT -> REFLECT", "Event Click dipicu pada #btn-buy. Transaksi simulasi dinyatakan berhasil!", "emerald");
+            }, 1000);
+        }
+
+        function sbAction(msg) {
+            alert("NEXUS SANDBOX RESPONSE:\n\n" + msg);
+        }
+
+        // AKSI 4: EXTRACT DATA
+        function agentActionExtract() {
+            addLog("PERCEIVE -> PLAN", "Mengekstraksi teks deskripsi produk dan harga dari DOM node #node-product...", "purple");
+            speakAgent("Mengekstraksi data struktur web ke dalam format JSON.");
+            
+            setTimeout(() => {
+                const extractedJSON = {
+                    item: "Neural Headset Pro v5",
+                    price: 4500000,
+                    currency: "IDR",
+                    status: "In Stock (Tersedia)",
+                    timestamp: new Date().toISOString()
+                };
+                addLog("ACT (EXTRACT DATA)", "JSON Payload Terbuat:\n" + JSON.stringify(extractedJSON, null, 2), "amber");
+                incrementAction();
+                speakAgent("Ekstraksi data selesai. Payload JSON telah dicetak di terminal log.");
+            }, 800);
+        }
+
+        function incrementAction() {
+            actionCounter++;
+            document.getElementById("actionCount").innerText = actionCounter;
+        }
+
+        // --- SCREENSAVER & WATCHDOG ---
+        function initWatchdog() {
+            const resetTimer = () => {
+                idleTimer = 0;
+                if(isScreensaverOn) hideScreensaver();
+            };
+            window.onmousemove = resetTimer;
+            window.onkeypress = resetTimer;
+            window.ontouchstart = resetTimer;
+
+            setInterval(() => {
+                idleTimer++;
+                // Aktifkan screensaver jika idle 300 detik (5 menit)
+                if(idleTimer >= 300 && !isScreensaverOn) showScreensaver();
+            }, 1000);
+        }
+
+        function showScreensaver() {
+            isScreensaverOn = true;
+            const sc = document.getElementById("screensaver");
+            sc.classList.remove("hidden");
+            setTimeout(() => { sc.classList.remove("opacity-0"); sc.classList.add("opacity-100"); }, 50);
+            speakAgent("Mengaktifkan mode pelindung layar privasi.");
+        }
+
+        function hideScreensaver() {
+            if(!isScreensaverOn) return;
+            isScreensaverOn = false;
+            const sc = document.getElementById("screensaver");
+            sc.classList.remove("opacity-100");
+            sc.classList.add("opacity-0");
+            setTimeout(() => { sc.classList.add("hidden"); }, 500);
+            speakAgent("Sistem aktif kembali. Selamat datang kembali, Pak Adi.");
+        }
+
+        // --- CREATOR MODAL ---
+        function openCreatorModal() { document.getElementById("creatorModal").classList.remove("hidden"); }
+        function closeCreatorModal() { document.getElementById("creatorModal").classList.add("hidden"); }
+
+        // --- HOLOGRAPHIC TOOLTIP ---
+        function initHoloTooltips() {
+            const tipBox = document.getElementById("holoTooltipBox");
+            let tipTimeout;
+            
+            document.querySelectorAll(".custom-holo").forEach(el => {
+                el.addEventListener("mouseenter", () => {
+                    tipBox.innerHTML = `<i class="fa-solid fa-satellite-dish text-cyan-400 animate-pulse mr-1"></i> ${el.getAttribute("data-holo")}`;
+                    tipBox.style.display = "block";
+                    clearTimeout(tipTimeout);
+                    tipTimeout = setTimeout(() => { tipBox.style.display = "none"; }, 5000);
+                });
+                el.addEventListener("mousemove", (e) => {
+                    let posX = e.clientX + 15;
+                    let posY = e.clientY + 15;
+                    if (posX + 300 > window.innerWidth) posX = e.clientX - 315;
+                    if (posY + 80 > window.innerHeight) posY = e.clientY - 95;
+                    tipBox.style.left = posX + "px";
+                    tipBox.style.top = posY + "px";
+                    clearTimeout(tipTimeout);
+                    tipTimeout = setTimeout(() => { tipBox.style.display = "none"; }, 5000);
+                });
+                el.addEventListener("mouseleave", () => {
+                    clearTimeout(tipTimeout);
+                    tipBox.style.display = "none";
+                });
+            });
+        }
+    </script>
+</body>
+</html>
